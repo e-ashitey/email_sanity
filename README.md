@@ -1,39 +1,50 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# **Email Sanity**
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/guides/libraries/writing-package-pages).
+A robust Flutter package designed to provide enhanced email validation with additional layers of accuracy and reliability. Building on the foundation of the popular email_validator package, EmailSanity introduces extra "magic" to ensure that the emails you process are not just syntactically correct, but also contextually appropriate and ready for real-world use.
 
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-library-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/developing-packages).
--->
+It validates the email syntax and checks as well as the domains to ensure the email provided is accurate.
 
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+**Email Providers Being Checked:**
 
-## Features
+1. Google
+2. Yahoo
+3. Microsoft
+4. Apple
+5. Yandex
+6. Fastmail
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+## **Installation**
 
-## Getting started
+### 1. Add Package
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+Add this to your package's `pubspec.yaml` file:
 
-## Usage
-
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
-
-```dart
-const like = 'sample';
+```yaml
+dependencies:
+  email_sanity: '^0.0.1'
 ```
 
-## Additional information
+#### 2. Run Pub Get
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```bash
+$ pub get
+..
+```
+
+
+#### 3. Import Email Sanity
+
+```Dart
+import 'package:email_sanity/email_sanity.dart';
+```
+
+## **Usage**
+
+```Dart
+void main() {
+
+    var email = "email@gmail.com";
+
+    assert(EmailSanity.validate(email));
+}
+```
