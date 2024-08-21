@@ -25,7 +25,7 @@ EmailConfig get configCheckers => EmailConfig(
       ),
       microsoft: EmailProvider(
         aliases: ["outlook", "hotmail", "live", "msn"],
-        domains: [".com", ".co", ".de"],
+        domains: [".com", ".co", ".de", ".co.uk"],
       ),
       apple: EmailProvider(
         aliases: ["icloud", "me", "mac"],
