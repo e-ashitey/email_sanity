@@ -1,4 +1,41 @@
+/// The `EmailSanity` class provides methods to validate email addresses.
+///
+/// This class offers both general email validation and provider-specific
+/// validation. It uses the `email_validator` package for general validation
+/// and custom logic for provider-specific validation.
 library email_sanity;
+
+/// Validates an email address.
+///
+/// This method performs general email validation and provider-specific
+/// validation. It returns `true` if the email is valid, otherwise `false`.
+///
+/// - Parameters:
+///   - email: The email address to validate.
+///   - allowTopLevelDomains: Whether to allow top-level domains (e.g., "example@com").
+///   - allowInternational: Whether to allow international characters in the email address.
+///
+/// - Returns: `true` if the email is valid, otherwise `false`.
+// static bool validate(String email,
+//   [bool allowTopLevelDomains = false, bool allowInternational = true]);
+
+/// Validates an email address and provides detailed validation results.
+///
+/// This method performs general email validation and provider-specific
+/// validation. It returns a `ValidationResult` object containing the
+/// validation status and any errors encountered.
+///
+/// - Parameters:
+///   - email: The email address to validate.
+///   - allowTopLevelDomains: Whether to allow top-level domains (e.g., "example@com").
+///   - allowInternational: Whether to allow international characters in the email address.
+///
+/// - Returns: A `ValidationResult` object containing the validation status and any errors encountered.
+// static ValidationResult validateWithDetails(
+//   String email, [
+//   bool allowTopLevelDomains = false,
+//   bool allowInternational = true,
+// ]);
 
 import 'package:email_sanity/src/services/email_sanity_config.dart';
 import 'package:email_sanity/src/model/validation_result.dart';
