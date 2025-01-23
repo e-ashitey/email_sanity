@@ -143,31 +143,33 @@ void main() {
     'email@yahoo.com.uk',
   ];
 
-  test('Validate invalidAddresses are invalid emails', () {
-    for (var actual in invalidAddresses) {
-      expect(EmailSanity.validate(actual, true), equals(false),
-          reason: 'E-mail: $actual');
-    }
-  });
+  group("Email Validation Test (EmailSanity.validate)", () {
+    test('Validate invalidAddresses are invalid emails', () {
+      for (var actual in invalidAddresses) {
+        expect(EmailSanity.validate(actual, true), equals(false),
+            reason: 'E-mail: $actual');
+      }
+    });
 
-  test('Validate validAddresses are valid emails', () {
-    for (var actual in validAddresses) {
-      expect(EmailSanity.validate(actual, true), equals(true),
-          reason: 'E-mail: $actual');
-    }
-  });
+    test('Validate validAddresses are valid emails', () {
+      for (var actual in validAddresses) {
+        expect(EmailSanity.validate(actual, true), equals(true),
+            reason: 'E-mail: $actual');
+      }
+    });
 
-  test('Validate validInternational are valid emails', () {
-    for (var actual in validInternational) {
-      expect(EmailSanity.validate(actual, true, true), equals(true),
-          reason: 'E-mail: $actual');
-    }
-  });
+    test('Validate validInternational are valid emails', () {
+      for (var actual in validInternational) {
+        expect(EmailSanity.validate(actual, true, true), equals(true),
+            reason: 'E-mail: $actual');
+      }
+    });
 
-  test('Validate specialUserMistakes are invalid emails', () {
-    for (var actual in specialUserMistakes) {
-      expect(EmailSanity.validate(actual, true), equals(false),
-          reason: 'E-mail: $actual');
-    }
+    test('Validate specialUserMistakes are invalid emails', () {
+      for (var actual in specialUserMistakes) {
+        expect(EmailSanity.validate(actual, true), equals(false),
+            reason: 'E-mail: $actual');
+      }
+    });
   });
 }
