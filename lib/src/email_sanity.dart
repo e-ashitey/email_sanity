@@ -58,7 +58,15 @@ class EmailSanity {
     bool allowTopLevelDomains = false,
     bool allowInternational = true,
   ]) {
-    // Step 1: Check if email contains "@"
+    // Step 1: Check if email is empty
+    if (email.isEmpty) {
+      return ValidationResult(
+        isValid: false,
+        error: EmailValidationError.requireEmail,
+      );
+    }
+    
+    // Step 2: Check if email contains "@"
     if (!email.contains('@')) {
       return ValidationResult(
         isValid: false,
@@ -66,7 +74,7 @@ class EmailSanity {
       );
     }
 
-    // Step 2: General email validation
+    // Step 3: General email validation
     if (!EmailValidator.validate(
         email, allowTopLevelDomains, allowInternational)) {
       return ValidationResult(
@@ -75,7 +83,7 @@ class EmailSanity {
       );
     }
 
-    // Step 3: Provider-specific validation
+    // Step 4: Provider-specific validation
     return EmailSanityConfig.sanitize(email);
   }
 }
