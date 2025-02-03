@@ -1,8 +1,8 @@
 name: email_sanity
 description: A Flutter package for enhanced email validation with additional layers of accuracy and reliability.
-version: 0.0.1
+version: 0.1.0
 homepage: null
-repository: https://github.com/spiritscripter/email_sanity
+repository: https://github.com/e-ashitey/email_sanity
 
 environment:
   sdk: ">=3.4.3 <4.0.0"

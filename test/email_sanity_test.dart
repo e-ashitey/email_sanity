@@ -1,4 +1,5 @@
 import 'package:email_sanity/src/email_sanity.dart';
+import 'package:email_sanity/src/model/validation_result.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -59,11 +60,16 @@ void main() {
     'the-total-length@of-an-entire-address.cannot-be-longer-than-two-hundred-and-fifty-four-characters.and-this-address-is-254-characters-exactly.so-it-should-be-valid.and-im-going-to-add-some-more-words-here.to-increase-the-length-blah-blah-blah-blah-bla.org',
     'uncommon-tld@sld.mobi',
     'uncommon-tld@sld.museum',
-    'uncommon-tld@sld.travel'
+    'uncommon-tld@sld.travel',
+
+    // examples from providers
+    'email@gmail.com',
+    'email@yahoo.co.uk',
   ];
 
   final List<String> invalidAddresses = [
     'invalid',
+    'invalid@',
     'invalid@',
     'invalid @',
     'invalid@[555.666.777.888]',
@@ -143,31 +149,83 @@ void main() {
     'email@yahoo.com.uk',
   ];
 
-  test('Validate invalidAddresses are invalid emails', () {
-    for (var actual in invalidAddresses) {
-      expect(EmailSanity.validate(actual, true), equals(false),
-          reason: 'E-mail: $actual');
-    }
-  });
+  group("Email Validation Test (EmailSanity.validate)", () {
+    test('Validate invalidAddresses are invalid emails', () {
+      for (var actual in invalidAddresses) {
+        expect(EmailSanity.validate(actual, true), equals(false),
+            reason: 'E-mail: $actual');
+      }
+    });
 
-  test('Validate validAddresses are valid emails', () {
-    for (var actual in validAddresses) {
-      expect(EmailSanity.validate(actual, true), equals(true),
-          reason: 'E-mail: $actual');
-    }
-  });
+    test('Validate validAddresses are valid emails', () {
+      for (var actual in validAddresses) {
+        expect(EmailSanity.validate(actual, true), equals(true),
+            reason: 'E-mail: $actual');
+      }
+    });
 
-  test('Validate validInternational are valid emails', () {
-    for (var actual in validInternational) {
-      expect(EmailSanity.validate(actual, true, true), equals(true),
-          reason: 'E-mail: $actual');
-    }
-  });
+    test('Validate validInternational are valid emails', () {
+      for (var actual in validInternational) {
+        expect(EmailSanity.validate(actual, true, true), equals(true),
+            reason: 'E-mail: $actual');
+      }
+    });
 
-  test('Validate specialUserMistakes are invalid emails', () {
-    for (var actual in specialUserMistakes) {
-      expect(EmailSanity.validate(actual, true), equals(false),
-          reason: 'E-mail: $actual');
-    }
+    test('Validate specialUserMistakes are invalid emails', () {
+      for (var actual in specialUserMistakes) {
+        expect(EmailSanity.validate(actual, true), equals(false),
+            reason: 'E-mail: $actual');
+      }
+    });
+  });
+  group("Email Validation Test With Details (EmailSanity.validateWithDetails)",
+      () {
+    test('Should return missingAtSymbol error when email lacks "@"', () {
+      // Arrange
+      const email = "invalidemail.com";
+
+      // Act
+      final result = EmailSanity.validateWithDetails(email);
+
+      // Assert
+      expect(result.isValid, false);
+      expect(result.error, EmailValidationError.missingAtSymbol);
+      expect(result.errorMessage, EmailValidationError.missingAtSymbol.message);
+    });
+
+    test('Validate inValidAddresses are invalid emails', () {
+      for (var actual in invalidAddresses) {
+        expect(EmailSanity.validateWithDetails(actual, true).isValid,
+            equals(false));
+      }
+    });
+
+    test('Validate validAddresses are valid emails', () {
+      for (var actual in validAddresses) {
+        expect(
+            EmailSanity.validateWithDetails(actual, true).isValid, equals(true),
+            reason: 'E-mail: $actual');
+      }
+    });
+
+    test('Validate validInternational are valid emails', () {
+      for (var actual in validInternational) {
+        expect(EmailSanity.validateWithDetails(actual, true, true).isValid,
+            equals(true),
+            reason: 'E-mail: $actual');
+      }
+    });
+
+    test('Validate specialUserMistakes are invalid emails', () {
+      for (var actual in specialUserMistakes) {
+        final san = EmailSanity.validateWithDetails("email@gmail.cos", true);
+
+        expect(san.error, equals(EmailValidationError.invalidDomain),
+            reason: 'E-mail: $actual');
+        expect(san.errorMessage,
+            equals(EmailValidationError.invalidDomain.message),
+            reason: 'E-mail: $actual');
+      }
+    });
   });
 }

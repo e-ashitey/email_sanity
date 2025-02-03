@@ -1,6 +1,44 @@
+/// The `EmailSanity` class provides methods to validate email addresses.
+///
+/// This class offers both general email validation and provider-specific
+/// validation. It uses the `email_validator` package for general validation
+/// and custom logic for provider-specific validation.
 library email_sanity;
 
-import 'package:email_sanity/src/model/config_checkers.dart';
+/// Validates an email address.
+///
+/// This method performs general email validation and provider-specific
+/// validation. It returns `true` if the email is valid, otherwise `false`.
+///
+/// - Parameters:
+///   - email: The email address to validate.
+///   - allowTopLevelDomains: Whether to allow top-level domains (e.g., "example@com").
+///   - allowInternational: Whether to allow international characters in the email address.
+///
+/// - Returns: `true` if the email is valid, otherwise `false`.
+// static bool validate(String email,
+//   [bool allowTopLevelDomains = false, bool allowInternational = true]);
+
+/// Validates an email address and provides detailed validation results.
+///
+/// This method performs general email validation and provider-specific
+/// validation. It returns a `ValidationResult` object containing the
+/// validation status and any errors encountered.
+///
+/// - Parameters:
+///   - email: The email address to validate.
+///   - allowTopLevelDomains: Whether to allow top-level domains (e.g., "example@com").
+///   - allowInternational: Whether to allow international characters in the email address.
+///
+/// - Returns: A `ValidationResult` object containing the validation status and any errors encountered.
+// static ValidationResult validateWithDetails(
+//   String email, [
+//   bool allowTopLevelDomains = false,
+//   bool allowInternational = true,
+// ]);
+
+import 'package:email_sanity/src/services/email_sanity_config.dart';
+import 'package:email_sanity/src/model/validation_result.dart';
 import 'package:email_validator/email_validator.dart';
 
 // Entry point for the email sanity package
@@ -8,41 +46,44 @@ class EmailSanity {
   static bool validate(String email,
       [bool allowTopLevelDomains = false, bool allowInternational = true]) {
     // Check if the email is valid (general validation)
-    if (!EmailValidator.validate(
-        email, allowTopLevelDomains, allowInternational)) {
-      return false; // Exit early if the email is not valid
-    }
+    final result =
+        validateWithDetails(email, allowTopLevelDomains, allowInternational);
 
     // Check if the email is valid based on the email provider (specific validation)
-    return _sanityCheck(email);
+    return result.isValid;
   }
 
-  // Method to check if the email is valid based on the email provider
-  static bool _sanityCheck(String email) {
-    bool isSane = true;
-    configCheckers.forEachProvider((_, provider) {
-      var aliases = provider.aliases.toSet();
-      var domains = provider.domains.toSet();
+  static ValidationResult validateWithDetails(
+    String email, [
+    bool allowTopLevelDomains = false,
+    bool allowInternational = true,
+  ]) {
+    // Step 1: Check if email is empty
+    if (email.isEmpty) {
+      return ValidationResult(
+        isValid: false,
+        error: EmailValidationError.requireEmail,
+      );
+    }
+    
+    // Step 2: Check if email contains "@"
+    if (!email.contains('@')) {
+      return ValidationResult(
+        isValid: false,
+        error: EmailValidationError.missingAtSymbol,
+      );
+    }
 
-      for (var alias in aliases) {
-        // Split the email address at the "@" symbol
-        String afterAt = email.split('@')[1];
+    // Step 3: General email validation
+    if (!EmailValidator.validate(
+        email, allowTopLevelDomains, allowInternational)) {
+      return ValidationResult(
+        isValid: false,
+        error: EmailValidationError.invalidFormat,
+      );
+    }
 
-        // Extract the word before the first dot
-        String word = afterAt.split('.')[0];
-
-        // Check if the second part (after the "@") contains "ask"
-        bool hasAlias = word.toLowerCase() == alias;
-        if (hasAlias) {
-          // Check if any domain matches
-          isSane = domains.any((domain) => email.endsWith(domain));
-
-          // Exit the loop early since the email has been validated
-          break;
-        }
-      }
-    });
-
-    return isSane;
+    // Step 4: Provider-specific validation
+    return EmailSanityConfig.sanitize(email);
   }
 }
