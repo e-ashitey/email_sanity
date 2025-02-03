@@ -9,6 +9,7 @@ class ValidationResult {
 }
 
 enum EmailValidationError {
+  requireEmail,
   invalidFormat,
   missingAtSymbol,
   missingLocalPart,
@@ -26,6 +27,8 @@ enum EmailValidationError {
 extension EmailValidationErrorMessage on EmailValidationError {
   String get message {
     switch (this) {
+      case EmailValidationError.requireEmail:
+        return "Email is required";
       case EmailValidationError.invalidFormat:
         return "The email format is invalid.";
       case EmailValidationError.missingAtSymbol:
