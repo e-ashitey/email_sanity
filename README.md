@@ -13,7 +13,7 @@ It validates the email syntax and checks as well as the domains to ensure the em
 5. Yandex
 6. Fastmail
 
-![Email Sanity Preview](preview.gif)
+<img src="preview.gif" alt="Email Sanity Preview" width="300"/>
 
 ## **Installation**
 
