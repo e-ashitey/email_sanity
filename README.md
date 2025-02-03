@@ -23,7 +23,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  email_sanity: '^0.0.1'
+  email_sanity: '^1.0.0'
 ```
 
 #### 2. Run Pub Get
@@ -33,7 +33,6 @@ $ pub get
 ..
 ```
 
-
 #### 3. Import Email Sanity
 
 ```Dart
@@ -42,11 +41,22 @@ import 'package:email_sanity/email_sanity.dart';
 
 ## **Usage**
 
+### Basic Validation
+
 ```Dart
 void main() {
-
     var email = "email@gmail.com";
-
     assert(EmailSanity.validate(email));
+}
+```
+
+### Validation with Details
+
+```Dart
+void main() {
+    var email = "email@gmail.com";
+    var result = EmailSanity.validateWithDetails(email);
+    print('Is valid: ${result.isValid}');
+    print('Error message: ${result.errorMessage}');
 }
 ```
