@@ -1,6 +1,6 @@
 # **Email Sanity**
 
-A robust Flutter package designed to provide enhanced email validation with additional layers of accuracy and reliability. Building on the foundation of the popular email_validator package, EmailSanity introduces extra "magic" to ensure that the emails you process are not just syntactically correct, but also contextually appropriate and ready for real-world use.
+A robust Flutter package designed to provide enhanced email validation with additional layers of accuracy and reliability. Building on the foundation of the popular [email_validator](https://pub.dev/packages/email_validator) package, EmailSanity introduces extra "magic" to ensure that the emails you process are not just syntactically correct, but also contextually appropriate and ready for real-world use.
 
 It validates the email syntax and checks as well as the domains to ensure the email provided is accurate.
 
