@@ -1,11 +1,12 @@
 import 'package:email_sanity/src/model/validation_result.dart';
+import 'package:email_sanity/src/services/localization.dart';
 
 import '../model/email_provider.dart';
 
 /// Configuration class for email sanity
 class EmailSanityConfig {
   /// Method to check if the email is valid based on the email provider
-  static ValidationResult sanitize(String email) {
+  static ValidationResult sanitize(String email, {String locale = 'en'}) {
     for (var provider in EmailProvider.providers.values) {
       var aliases = provider.aliases.toSet();
       var domains = provider.domains.toSet();
@@ -23,7 +24,10 @@ class EmailSanityConfig {
           if (!isDomainValid) {
             return ValidationResult(
               isValid: false,
-              error: EmailValidationError.invalidDomain,
+              error: EmailSanityLocalizations.getMessage(
+                EmailValidationError.invalidDomain,
+                locale: locale,
+              ),
               // errorMessage:
               //     "Email domain '$afterAt' does not match any of the allowed domains for alias '$alias'.",
             );
