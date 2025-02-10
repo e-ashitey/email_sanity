@@ -1,5 +1,6 @@
 import 'package:email_sanity/src/email_sanity.dart';
 import 'package:email_sanity/src/model/validation_result.dart';
+import 'package:email_sanity/src/services/localization.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -180,6 +181,18 @@ void main() {
   });
   group("Email Validation Test With Details (EmailSanity.validateWithDetails)",
       () {
+    test('Should return requireEmail error when email is empty', () {
+      // Act
+      final result = EmailSanity.validateWithDetails("");
+
+      // Assert
+      expect(result.isValid, false);
+      expect(result, isA<ValidationResult>());
+      expect(
+          result.error,
+          EmailSanityLocalizations.getMessage(
+              EmailValidationError.requireEmail));
+    });
     test('Should return missingAtSymbol error when email lacks "@"', () {
       // Arrange
       const email = "invalidemail.com";
@@ -189,13 +202,18 @@ void main() {
 
       // Assert
       expect(result.isValid, false);
-      expect(result.error, EmailValidationError.missingAtSymbol);
-      expect(result.errorMessage, EmailValidationError.missingAtSymbol.message);
+      expect(result, isA<ValidationResult>());
+      expect(
+          result.error,
+          EmailSanityLocalizations.getMessage(
+              EmailValidationError.missingAtSymbol));
     });
 
     test('Validate inValidAddresses are invalid emails', () {
       for (var actual in invalidAddresses) {
-        expect(EmailSanity.validateWithDetails(actual, true).isValid,
+        expect(
+            EmailSanity.validateWithDetails(actual, allowTopLevelDomains: true)
+                .isValid,
             equals(false));
       }
     });
@@ -203,14 +221,19 @@ void main() {
     test('Validate validAddresses are valid emails', () {
       for (var actual in validAddresses) {
         expect(
-            EmailSanity.validateWithDetails(actual, true).isValid, equals(true),
+            EmailSanity.validateWithDetails(actual, allowTopLevelDomains: true)
+                .isValid,
+            equals(true),
             reason: 'E-mail: $actual');
       }
     });
 
     test('Validate validInternational are valid emails', () {
       for (var actual in validInternational) {
-        expect(EmailSanity.validateWithDetails(actual, true, true).isValid,
+        expect(
+            EmailSanity.validateWithDetails(actual,
+                    allowTopLevelDomains: true, allowInternational: true)
+                .isValid,
             equals(true),
             reason: 'E-mail: $actual');
       }
@@ -218,14 +241,57 @@ void main() {
 
     test('Validate specialUserMistakes are invalid emails', () {
       for (var actual in specialUserMistakes) {
-        final san = EmailSanity.validateWithDetails("email@gmail.cos", true);
+        final san = EmailSanity.validateWithDetails("email@gmail.cos",
+            allowTopLevelDomains: true);
 
-        expect(san.error, equals(EmailValidationError.invalidDomain),
+        expect(
+            san.error,
+            EmailSanityLocalizations.getMessage(
+                EmailValidationError.invalidDomain),
             reason: 'E-mail: $actual');
-        expect(san.errorMessage,
-            equals(EmailValidationError.invalidDomain.message),
-            reason: 'E-mail: $actual');
+        // expect(san.errorMessage,
+        //     equals(EmailValidationError.invalidDomain.message),
+        //     reason: 'E-mail: $actual');
       }
+    });
+
+    // Test for locales
+    test('Should return localized error message for missingAtSymbol', () {
+      // Arrange
+      const email = "invalidemail.com";
+      const locale = "fr";
+
+      // Act
+      final result = EmailSanity.validateWithDetails(email, locale: locale);
+
+      // Assert
+      expect(result.isValid, false);
+      expect(result, isA<ValidationResult>());
+      expect(
+          result.error,
+          EmailSanityLocalizations.getMessage(
+              EmailValidationError.missingAtSymbol,
+              locale: locale));
+    });
+
+    test(
+        'Should default to english when locale is unknown/undefined in locales map',
+        () {
+      // Arrange
+      const email = "invalidemail.com";
+      const locale = "unknown";
+
+      // Act
+      final result = EmailSanity.validateWithDetails(email, locale: locale);
+
+      // Assert
+      expect(result.isValid, false);
+      expect(result, isA<ValidationResult>());
+      expect(
+          result.error,
+          EmailSanityLocalizations.getMessage(
+              EmailValidationError.missingAtSymbol,
+              locale: locale));
     });
   });
 }
