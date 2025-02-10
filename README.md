@@ -15,30 +15,6 @@ It validates the email syntax and checks as well as the domains to ensure the em
 
 <img src="preview.gif" alt="Email Sanity Preview" width="300"/>
 
-## **Installation**
-
-### 1. Add Package
-
-Add this to your package's `pubspec.yaml` file:
-
-```yaml
-dependencies:
-  email_sanity: '^1.0.0'
-```
-
-#### 2. Run Pub Get
-
-```bash
-$ pub get
-..
-```
-
-#### 3. Import Email Sanity
-
-```Dart
-import 'package:email_sanity/email_sanity.dart';
-```
-
 ## **Usage**
 
 ### Basic Validation
@@ -55,8 +31,11 @@ void main() {
 ```Dart
 void main() {
     var email = "email@gmail.com";
-    var result = EmailSanity.validateWithDetails(email);
+    var result = EmailSanity.validateWithDetails(email, locale: 'es'); // add optional locale (defaults to en)
     print('Is valid: ${result.isValid}');
     print('Error message: ${result.errorMessage}');
 }
 ```
+
+#### Test Coverage Report
+<img src="coverage.png" alt="Test Coverage" width="300"/>
