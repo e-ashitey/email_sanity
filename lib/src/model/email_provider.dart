@@ -1,10 +1,15 @@
+/// EmailProvider class to define email providers and their aliases/domains
 class EmailProvider {
+  /// List of aliases for the email provider
   final List<String> aliases;
+
+  /// List of domains for the email provider
   final List<String> domains;
 
+  /// Constructor to create an EmailProvider instance
   EmailProvider({required this.aliases, required this.domains});
 
-  // Define email providers and their aliases/domains
+  /// Define email providers and their aliases/domains
   static final Map<String, EmailProvider> providers = {
     "google": EmailProvider(
       aliases: ["gmail", "googlemail"],

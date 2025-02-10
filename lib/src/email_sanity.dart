@@ -41,8 +41,9 @@ import 'package:email_sanity/src/services/email_sanity_config.dart';
 import 'package:email_sanity/src/model/validation_result.dart';
 import 'package:email_validator/email_validator.dart';
 
-// Entry point for the email sanity package
+/// Entry point for the email sanity package
 class EmailSanity {
+  /// Validates an email address.
   static bool validate(String email,
       [bool allowTopLevelDomains = false, bool allowInternational = true]) {
     // Check if the email is valid (general validation)
@@ -53,6 +54,7 @@ class EmailSanity {
     return result.isValid;
   }
 
+  /// Validates an email address and provides detailed validation results.
   static ValidationResult validateWithDetails(
     String email, [
     bool allowTopLevelDomains = false,

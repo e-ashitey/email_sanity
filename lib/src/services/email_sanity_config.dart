@@ -2,12 +2,9 @@ import 'package:email_sanity/src/model/validation_result.dart';
 
 import '../model/email_provider.dart';
 
+/// Configuration class for email sanity
 class EmailSanityConfig {
-  // // Get provider by name
-  // static EmailProvider? getProvider(String name) =>
-  //     EmailProvider.providers[name];
-
-  // Method to check if the email is valid based on the email provider
+  /// Method to check if the email is valid based on the email provider
   static ValidationResult sanitize(String email) {
     for (var provider in EmailProvider.providers.values) {
       var aliases = provider.aliases.toSet();
