@@ -39,6 +39,7 @@ library email_sanity;
 
 import 'package:email_sanity/src/services/email_sanity_config.dart';
 import 'package:email_sanity/src/model/validation_result.dart';
+import 'package:email_sanity/src/services/localization.dart';
 import 'package:email_validator/email_validator.dart';
 
 /// Entry point for the email sanity package
@@ -47,8 +48,9 @@ class EmailSanity {
   static bool validate(String email,
       [bool allowTopLevelDomains = false, bool allowInternational = true]) {
     // Check if the email is valid (general validation)
-    final result =
-        validateWithDetails(email, allowTopLevelDomains, allowInternational);
+    final result = validateWithDetails(email,
+        allowTopLevelDomains: allowTopLevelDomains,
+        allowInternational: allowInternational);
 
     // Check if the email is valid based on the email provider (specific validation)
     return result.isValid;
@@ -56,15 +58,18 @@ class EmailSanity {
 
   /// Validates an email address and provides detailed validation results.
   static ValidationResult validateWithDetails(
-    String email, [
+    String email, {
     bool allowTopLevelDomains = false,
     bool allowInternational = true,
-  ]) {
+    String locale = 'en',
+  }) {
     // Step 1: Check if email is empty
     if (email.isEmpty) {
       return ValidationResult(
         isValid: false,
-        error: EmailValidationError.requireEmail,
+        error: EmailSanityLocalizations.getMessage(
+            EmailValidationError.requireEmail,
+            locale: locale),
       );
     }
 
@@ -72,7 +77,9 @@ class EmailSanity {
     if (!email.contains('@')) {
       return ValidationResult(
         isValid: false,
-        error: EmailValidationError.missingAtSymbol,
+        error: EmailSanityLocalizations.getMessage(
+            EmailValidationError.missingAtSymbol,
+            locale: locale),
       );
     }
 
@@ -81,7 +88,9 @@ class EmailSanity {
         email, allowTopLevelDomains, allowInternational)) {
       return ValidationResult(
         isValid: false,
-        error: EmailValidationError.invalidFormat,
+        error: EmailSanityLocalizations.getMessage(
+            EmailValidationError.invalidFormat,
+            locale: locale),
       );
     }
 
