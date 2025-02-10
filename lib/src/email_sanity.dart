@@ -65,7 +65,7 @@ class EmailSanity {
         error: EmailValidationError.requireEmail,
       );
     }
-    
+
     // Step 2: Check if email contains "@"
     if (!email.contains('@')) {
       return ValidationResult(

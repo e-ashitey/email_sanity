@@ -1,4 +1,3 @@
-
 class ValidationResult {
   final bool isValid;
   final EmailValidationError? error;
