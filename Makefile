@@ -1,6 +1,15 @@
-current_version=0.1.0
+current_version=0.2.0
 
-publish-dry:
-	@flutter pub publish --dry-run
-publish:
-	@flutter pub publish
+analyze:
+	@dart analyze
+
+test:
+	@dart test
+
+check: analyze test
+
+publish-dry: check
+	@dart pub publish --dry-run
+
+publish: check
+	@dart pub publish
