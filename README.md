@@ -1,10 +1,10 @@
-# **Email Sanity**
+# Email Sanity
 
-A robust Flutter package designed to provide enhanced email validation with additional layers of accuracy and reliability. Building on the foundation of the popular [email_validator](https://pub.dev/packages/email_validator) package, EmailSanity introduces extra "magic" to ensure that the emails you process are not just syntactically correct, but also contextually appropriate and ready for real-world use.
+A Dart package for email validation that goes beyond syntax checks. It builds on [email_validator](https://pub.dev/packages/email_validator) and rejects common typos against known consumer email providers.
 
-It validates the email syntax and checks as well as the domains to ensure the email provided is accurate.
+When the host’s first label matches a known provider alias (for example `gmail`, `yahoo`, `hotmail`), the full host must be one of that provider’s allowed domains (for example `gmail.com`). Unknown hosts that pass syntax validation are accepted.
 
-**Email Providers Being Checked:**
+**Providers checked:**
 
 1. Google
 2. Yahoo
@@ -15,48 +15,62 @@ It validates the email syntax and checks as well as the domains to ensure the em
 
 <img src="preview.gif" alt="Email Sanity Preview" width="300"/>
 
-## **Installation**
+## Installation
 
-### 1. Add Package
-
-Add this to your package's `pubspec.yaml` file:
+Add this to your package’s `pubspec.yaml`:
 
 ```yaml
 dependencies:
-  email_sanity: '^1.0.0'
+  email_sanity: ^0.2.0
 ```
 
-#### 2. Run Pub Get
+Then fetch packages:
 
 ```bash
-$ pub get
-..
+dart pub get
 ```
 
-#### 3. Import Email Sanity
+Import:
 
-```Dart
+```dart
 import 'package:email_sanity/email_sanity.dart';
 ```
 
-## **Usage**
+## Usage
 
-### Basic Validation
+### Basic validation
 
-```Dart
+```dart
 void main() {
-    var email = "email@gmail.com";
-    assert(EmailSanity.validate(email));
+  final email = 'email@gmail.com';
+  assert(EmailSanity.validate(email));
 }
 ```
 
-### Validation with Details
+### Validation with details
 
-```Dart
+```dart
 void main() {
-    var email = "email@gmail.com";
-    var result = EmailSanity.validateWithDetails(email);
-    print('Is valid: ${result.isValid}');
-    print('Error message: ${result.errorMessage}');
+  final result = EmailSanity.validateWithDetails('email@gmail.com');
+  print('Is valid: ${result.isValid}');
+  print('Error: ${result.error}');
+  print('Message: ${result.errorMessage}');
 }
 ```
+
+### Options
+
+```dart
+EmailSanity.validate(
+  email,
+  allowTopLevelDomains: false,
+  allowInternational: true,
+);
+```
+
+## Behavior notes
+
+- Leading and trailing whitespace is trimmed before validation.
+- Host comparison is case-insensitive (`User@Gmail.COM` is accepted).
+- Lookalike hosts such as `gmail.com.attacker.com` or `me.company.com` are rejected when the first label is a known provider alias.
+- Misspellings of the provider name itself (for example `gmial.com`) are not detected; only alias-matched hosts are checked against the allowlist.
