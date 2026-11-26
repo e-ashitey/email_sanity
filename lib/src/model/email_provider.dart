@@ -1,51 +1,55 @@
-/// EmailProvider class to define email providers and their aliases/domains
+/// Known consumer email providers and the domains they own.
+///
+/// Each provider lists mailbox labels ([aliases]) and the domain suffixes that
+/// are valid when combined with those labels. A host is accepted only when it
+/// exactly equals `alias + suffix` (for example `gmail` + `.com`).
 class EmailProvider {
-  /// List of aliases for the email provider
+  /// First labels that identify this provider (for example `gmail`, `yahoo`).
   final List<String> aliases;
 
-  /// List of domains for the email provider
+  /// Domain suffixes allowed for [aliases] (for example `.com`, `.co.uk`).
   final List<String> domains;
 
-  /// Constructor to create an EmailProvider instance
-  EmailProvider({required this.aliases, required this.domains});
+  /// Creates a provider definition.
+  const EmailProvider({required this.aliases, required this.domains});
 
-  /// Define email providers and their aliases/domains
-  static final Map<String, EmailProvider> providers = {
-    "google": EmailProvider(
-      aliases: ["gmail", "googlemail"],
-      domains: [".com"],
+  /// Built-in provider table used by Email Sanity.
+  static const Map<String, EmailProvider> providers = {
+    'google': EmailProvider(
+      aliases: ['gmail', 'googlemail'],
+      domains: ['.com'],
     ),
-    "yahoo": EmailProvider(
-      aliases: ["yahoo", "ymail", "rocketmail"],
+    'yahoo': EmailProvider(
+      aliases: ['yahoo', 'ymail', 'rocketmail'],
       domains: [
-        ".com",
-        ".co.uk",
-        ".fr",
-        ".de",
-        ".ca",
-        ".it",
-        ".au",
-        ".es",
-        ".br",
-        ".in",
-        ".j"
+        '.com',
+        '.co.uk',
+        '.fr',
+        '.de',
+        '.ca',
+        '.it',
+        '.com.au',
+        '.es',
+        '.com.br',
+        '.co.in',
+        '.co.jp',
       ],
     ),
-    "microsoft": EmailProvider(
-      aliases: ["outlook", "hotmail", "live", "msn"],
-      domains: [".com", ".co", ".de", ".co.uk", ".nl"],
+    'microsoft': EmailProvider(
+      aliases: ['outlook', 'hotmail', 'live', 'msn'],
+      domains: ['.com', '.de', '.co.uk', '.nl'],
     ),
-    "apple": EmailProvider(
-      aliases: ["icloud", "me", "mac"],
-      domains: [".com"],
+    'apple': EmailProvider(
+      aliases: ['icloud', 'me', 'mac'],
+      domains: ['.com'],
     ),
-    "yandex": EmailProvider(
-      aliases: ["yandex"],
-      domains: [".com", ".ru", ".ua", ".kz", ".by"],
+    'yandex': EmailProvider(
+      aliases: ['yandex'],
+      domains: ['.com', '.ru', '.ua', '.kz', '.by'],
     ),
-    "fastmail": EmailProvider(
-      aliases: ["fastmail"],
-      domains: [".com", ".fm"],
+    'fastmail': EmailProvider(
+      aliases: ['fastmail'],
+      domains: ['.com', '.fm'],
     ),
   };
 }

@@ -1,9 +1,8 @@
-import 'package:email_sanity/src/email_sanity.dart';
-import 'package:email_sanity/src/model/validation_result.dart';
-import 'package:flutter_test/flutter_test.dart';
+import 'package:email_sanity/email_sanity.dart';
+import 'package:test/test.dart';
 
 void main() {
-  final List<String> validAddresses = [
+  final validAddresses = <String>[
     'fredrik@dualog.com',
     '"Abc\\@def"@example.com',
     '"Fred Bloggs"@example.com',
@@ -19,8 +18,6 @@ void main() {
     'valid.ipv6.addr@[IPv6:fe80::230:48ff:fe33:bc33]',
     'valid.ipv6.addr@[IPv6:fe80:0000:0000:0000:0202:b3ff:fe1e:8329]',
     'valid.ipv6v4.addr@[IPv6:aaaa:aaaa:aaaa:aaaa:aaaa:aaaa:127.0.0.1]',
-
-    // examples from wikipedia
     'niceandsimple@example.com',
     'very.common@example.com',
     'a.little.lengthy.but.fine@dept.example.com',
@@ -32,8 +29,6 @@ void main() {
     "!#\$%&'*+-/=?^_`{}|~@example.org",
     "\"()<>[]:,;@\\\\\\\"!#\$%&'*+-/=?^_`{}| ~.a\"@example.org",
     '" "@example.org',
-
-    // examples from https://github.com/Sembiance/email-validator
     '"\\e\\s\\c\\a\\p\\e\\d"@sld.com',
     '"back\\slash"@sld.com',
     '"escaped\\"quote"@sld.com',
@@ -61,15 +56,29 @@ void main() {
     'uncommon-tld@sld.mobi',
     'uncommon-tld@sld.museum',
     'uncommon-tld@sld.travel',
-
-    // examples from providers
     'email@gmail.com',
+    'email@googlemail.com',
     'email@yahoo.co.uk',
+    'email@yahoo.co.jp',
+    'email@yahoo.com.au',
+    'email@yahoo.com.br',
+    'email@yahoo.co.in',
+    'email@ymail.com',
+    'email@hotmail.com',
+    'email@outlook.co.uk',
+    'email@live.com',
+    'email@msn.nl',
+    'email@icloud.com',
+    'email@me.com',
+    'email@mac.com',
+    'email@yandex.ru',
+    'email@fastmail.fm',
+    'User@Gmail.COM',
+    '  email@gmail.com  ',
   ];
 
-  final List<String> invalidAddresses = [
+  final invalidAddresses = <String>[
     'invalid',
-    'invalid@',
     'invalid@',
     'invalid @',
     'invalid@[555.666.777.888]',
@@ -77,16 +86,12 @@ void main() {
     'invalid@[127.0.0.1.]',
     'invalid@[127.0.0.1].',
     'invalid@[127.0.0.1]x',
-
-    // examples from wikipedia
     'Abc.example.com',
     'A@b@c@example.com',
     'a"b(c)d,e:f;g<h>i[j\\k]l@example.com',
     'just"not"right@example.com',
     'this is"not\\allowed@example.com',
     'this\\ still\\"not\\\\allowed@example.com',
-
-    // examples from https://github.com/Sembiance/email-validator
     '! #\$%`|@invalid-characters-in-local.org',
     '(),:;`|@more-invalid-characters-in-local.org',
     '* .local-starts-with-dot@sld.com',
@@ -94,7 +99,6 @@ void main() {
     '@missing-local.org',
     'IP-and-port@127.0.0.1:25',
     'another-invalid-ip@127.0.0.256',
-    'invalid',
     'invalid-characters-in-sld@! "#\$%(),/;<>_[]`|.org',
     'invalid-ip@127.0.0.1.26',
     'local-ends-with-dot.@sld.com',
@@ -109,22 +113,18 @@ void main() {
     'two..consecutive-dots@sld.com',
     'unbracketed-IP@127.0.0.1',
     'onelettertld@gmail.c',
-
-    // examples of real (invalid) input from real users.
     'No longer available.',
     'Moved.',
   ];
 
-  final List<String> validInternational = [
-    '伊昭傑@郵件.商務', // Chinese
-    'राम@मोहन.ईन्फो', // Hindi
-    'юзер@екзампл.ком', // Ukranian
-    'θσερ@εχαμπλε.ψομ', // Greek
+  final validInternational = <String>[
+    '伊昭傑@郵件.商務',
+    'राम@मोहन.ईन्फो',
+    'юзер@екзампл.ком',
+    'θσερ@εχαμπλε.ψομ',
   ];
 
-  // examples of real (invalid) input from real users.
-  final List<String> specialUserMistakes = [
-    // Gmail
+  final specialUserMistakes = <String>[
     'email@gmail.co',
     'email@gmail.con',
     'email@gmail.clm',
@@ -134,8 +134,6 @@ void main() {
     'email@gmail.comj',
     'email@gmail.comn',
     'email@gmail.como',
-
-    // Yahoo
     'email@yahoo.co',
     'email@yahoo.con',
     'email@yahoo.clm',
@@ -149,82 +147,180 @@ void main() {
     'email@yahoo.com.uk',
   ];
 
-  group("Email Validation Test (EmailSanity.validate)", () {
-    test('Validate invalidAddresses are invalid emails', () {
-      for (var actual in invalidAddresses) {
-        expect(EmailSanity.validate(actual, true), equals(false),
-            reason: 'E-mail: $actual');
+  final lookalikeDomains = <String>[
+    'user@gmail.com.attacker.com',
+    'user@gmail.notreally.com',
+    'user@me.company.com',
+    'user@mac.example.com',
+    'user@live.comedy.com',
+    'user@hotmail.co',
+    'user@outlook.co',
+    '"Abc@def"@gmail.con',
+  ];
+
+  group('EmailSanity.validate', () {
+    test('rejects invalidAddresses', () {
+      for (final email in invalidAddresses) {
+        expect(
+          EmailSanity.validate(email, allowTopLevelDomains: true),
+          isFalse,
+          reason: 'E-mail: $email',
+        );
       }
     });
 
-    test('Validate validAddresses are valid emails', () {
-      for (var actual in validAddresses) {
-        expect(EmailSanity.validate(actual, true), equals(true),
-            reason: 'E-mail: $actual');
+    test('accepts validAddresses', () {
+      for (final email in validAddresses) {
+        expect(
+          EmailSanity.validate(email, allowTopLevelDomains: true),
+          isTrue,
+          reason: 'E-mail: $email',
+        );
       }
     });
 
-    test('Validate validInternational are valid emails', () {
-      for (var actual in validInternational) {
-        expect(EmailSanity.validate(actual, true, true), equals(true),
-            reason: 'E-mail: $actual');
+    test('accepts validInternational when allowInternational is true', () {
+      for (final email in validInternational) {
+        expect(
+          EmailSanity.validate(
+            email,
+            allowTopLevelDomains: true,
+            allowInternational: true,
+          ),
+          isTrue,
+          reason: 'E-mail: $email',
+        );
       }
     });
 
-    test('Validate specialUserMistakes are invalid emails', () {
-      for (var actual in specialUserMistakes) {
-        expect(EmailSanity.validate(actual, true), equals(false),
-            reason: 'E-mail: $actual');
+    test('rejects specialUserMistakes', () {
+      for (final email in specialUserMistakes) {
+        expect(
+          EmailSanity.validate(email, allowTopLevelDomains: true),
+          isFalse,
+          reason: 'E-mail: $email',
+        );
       }
+    });
+
+    test('rejects lookalikeDomains', () {
+      for (final email in lookalikeDomains) {
+        expect(
+          EmailSanity.validate(email),
+          isFalse,
+          reason: 'E-mail: $email',
+        );
+      }
+    });
+
+    test('uses production defaults for allowTopLevelDomains', () {
+      expect(EmailSanity.validate('user@com'), isFalse);
     });
   });
-  group("Email Validation Test With Details (EmailSanity.validateWithDetails)",
-      () {
-    test('Should return missingAtSymbol error when email lacks "@"', () {
-      // Arrange
-      const email = "invalidemail.com";
 
-      // Act
-      final result = EmailSanity.validateWithDetails(email);
-
-      // Assert
-      expect(result.isValid, false);
-      expect(result.error, EmailValidationError.missingAtSymbol);
-      expect(result.errorMessage, EmailValidationError.missingAtSymbol.message);
-    });
-
-    test('Validate inValidAddresses are invalid emails', () {
-      for (var actual in invalidAddresses) {
-        expect(EmailSanity.validateWithDetails(actual, true).isValid,
-            equals(false));
-      }
-    });
-
-    test('Validate validAddresses are valid emails', () {
-      for (var actual in validAddresses) {
+  group('EmailSanity.validateWithDetails', () {
+    test('returns requireEmail for empty and whitespace-only input', () {
+      for (final email in ['', '   ', '\t']) {
+        final result = EmailSanity.validateWithDetails(email);
+        expect(result.isValid, isFalse, reason: 'E-mail: "$email"');
         expect(
-            EmailSanity.validateWithDetails(actual, true).isValid, equals(true),
-            reason: 'E-mail: $actual');
+          result.error,
+          EmailValidationError.requireEmail,
+          reason: 'E-mail: "$email"',
+        );
+        expect(
+          result.errorMessage,
+          EmailValidationError.requireEmail.message,
+          reason: 'E-mail: "$email"',
+        );
       }
     });
 
-    test('Validate validInternational are valid emails', () {
-      for (var actual in validInternational) {
-        expect(EmailSanity.validateWithDetails(actual, true, true).isValid,
-            equals(true),
-            reason: 'E-mail: $actual');
+    test('returns missingAtSymbol when @ is absent', () {
+      final result = EmailSanity.validateWithDetails('invalidemail.com');
+      expect(result.isValid, isFalse);
+      expect(result.error, EmailValidationError.missingAtSymbol);
+      expect(
+        result.errorMessage,
+        EmailValidationError.missingAtSymbol.message,
+      );
+    });
+
+    test('returns invalidDomain for each specialUserMistake', () {
+      for (final email in specialUserMistakes) {
+        final result = EmailSanity.validateWithDetails(
+          email,
+          allowTopLevelDomains: true,
+        );
+        expect(result.isValid, isFalse, reason: 'E-mail: $email');
+        expect(
+          result.error,
+          EmailValidationError.invalidDomain,
+          reason: 'E-mail: $email',
+        );
+        expect(
+          result.errorMessage,
+          EmailValidationError.invalidDomain.message,
+          reason: 'E-mail: $email',
+        );
       }
     });
 
-    test('Validate specialUserMistakes are invalid emails', () {
-      for (var actual in specialUserMistakes) {
-        final san = EmailSanity.validateWithDetails("email@gmail.cos", true);
+    test('returns invalidDomain for lookalikeDomains', () {
+      for (final email in lookalikeDomains) {
+        final result = EmailSanity.validateWithDetails(email);
+        expect(result.isValid, isFalse, reason: 'E-mail: $email');
+        expect(
+          result.error,
+          EmailValidationError.invalidDomain,
+          reason: 'E-mail: $email',
+        );
+      }
+    });
 
-        expect(san.error, equals(EmailValidationError.invalidDomain),
-            reason: 'E-mail: $actual');
-        expect(san.errorMessage,
-            equals(EmailValidationError.invalidDomain.message),
-            reason: 'E-mail: $actual');
+    test('accepts validAddresses', () {
+      for (final email in validAddresses) {
+        expect(
+          EmailSanity.validateWithDetails(
+            email,
+            allowTopLevelDomains: true,
+          ).isValid,
+          isTrue,
+          reason: 'E-mail: $email',
+        );
+      }
+    });
+
+    test('accepts validInternational', () {
+      for (final email in validInternational) {
+        expect(
+          EmailSanity.validateWithDetails(
+            email,
+            allowTopLevelDomains: true,
+            allowInternational: true,
+          ).isValid,
+          isTrue,
+          reason: 'E-mail: $email',
+        );
+      }
+    });
+
+    test('rejects invalidAddresses', () {
+      for (final email in invalidAddresses) {
+        expect(
+          EmailSanity.validateWithDetails(
+            email,
+            allowTopLevelDomains: true,
+          ).isValid,
+          isFalse,
+          reason: 'E-mail: $email',
+        );
+      }
+    });
+
+    test('exposes a message for every error code', () {
+      for (final error in EmailValidationError.values) {
+        expect(error.message, isNotEmpty, reason: error.name);
       }
     });
   });

@@ -1,88 +1,86 @@
-/// A class to represent the result of an email validation.
+/// Result of an email validation attempt.
 class ValidationResult {
-  /// A boolean value indicating if the email is valid.
+  /// Whether the address passed validation.
   final bool isValid;
 
-  /// An optional error message if the email is invalid.
+  /// Specific failure reason when [isValid] is false.
   final EmailValidationError? error;
 
-  /// Constructor to create a ValidationResult instance.
-  ValidationResult({required this.isValid, this.error});
+  /// Creates a validation result.
+  const ValidationResult({required this.isValid, this.error});
 
-  /// Get the error message if the email is invalid.
+  /// Human-readable message for [error], or null when the address is valid.
   String? get errorMessage => error?.message;
 }
 
-/// An enum to represent the possible email validation errors.
+/// Discrete email validation failure reasons.
 enum EmailValidationError {
-  /// The email is required.
+  /// The email value was empty or only whitespace.
   requireEmail,
 
-  /// The email format is invalid.
+  /// The address failed general format validation.
   invalidFormat,
 
-  /// The email is missing the '@' symbol.
+  /// The address does not contain `@`.
   missingAtSymbol,
 
-  /// The email is missing the local part before the '@' symbol.
+  /// The local part before `@` is missing.
   missingLocalPart,
 
-  /// The email is missing the domain part after the '@' symbol.
+  /// The domain part after `@` is missing.
   missingDomain,
 
-  /// The email domain is invalid or does not include a '.' (e.g., gmail.com).
+  /// A known provider alias is paired with a domain that provider does not use.
   invalidDomain,
 
-  /// The email domain is not supported by this service.
+  /// The domain is not supported by this package's rules.
   domainNotSupported,
 
-  /// The email uses a top-level domain that is not allowed.
+  /// A top-level domain was used when top-level domains are disallowed.
   topLevelDomainNotAllowed,
 
-  /// The email provider is not recognized.
+  /// The provider could not be recognized.
   unknownProvider,
 
-  /// The email provider or alias is not recognized.
+  /// The provider alias is not recognized.
   invalidAlias,
 
-  /// Internationalized email addresses are not supported.
+  /// Internationalized addresses are not supported under the current options.
   internationalEmailNotSupported,
 
-  /// The email alias does not match any supported provider aliases.
+  /// The top-level domain is not allowed.
   disallowedTopLevelDomain,
 }
 
-/// Extension to add error messages
+/// Human-readable messages for [EmailValidationError].
 extension EmailValidationErrorMessage on EmailValidationError {
-  /// Get the error message for the email validation error.
+  /// Message suitable for form feedback.
   String get message {
     switch (this) {
       case EmailValidationError.requireEmail:
-        return "Email is required";
+        return 'Email is required.';
       case EmailValidationError.invalidFormat:
-        return "The email format is invalid.";
+        return 'The email format is invalid.';
       case EmailValidationError.missingAtSymbol:
         return "The email must contain the '@' symbol.";
+      case EmailValidationError.missingLocalPart:
+        return 'The email is missing the local part before the @ symbol.';
+      case EmailValidationError.missingDomain:
+        return 'The email is missing the domain part after the @ symbol.';
       case EmailValidationError.invalidDomain:
-        return "The email domain is invalid or does not include a '.' (e.g., gmail.com).";
-      default:
-        return "";
-      // case EmailValidationError.missingLocalPart:
-      //   return "The email is missing the local part before the '@' symbol.";
-      // case EmailValidationError.missingDomain:
-      //   return "The email is missing the domain part after the '@' symbol.";
-      // case EmailValidationError.domainNotSupported:
-      //   return "The email domain is not supported by this service.";
-      // case EmailValidationError.topLevelDomainNotAllowed:
-      //   return "The email uses a top-level domain that is not allowed.";
-      // case EmailValidationError.unknownProvider:
-      //   return "The email provider or alias is not recognized.";
-      // case EmailValidationError.invalidAlias:
-      //   return "The email alias does not match any supported provider aliases.";
-      // case EmailValidationError.internationalEmailNotSupported:
-      //   return "Internationalized email addresses are not supported.";
-      // case EmailValidationError.disallowedTopLevelDomain:
-      //   return "Emails with this top-level domain are not allowed.";
+        return 'The email domain does not match a known domain for this provider.';
+      case EmailValidationError.domainNotSupported:
+        return 'The email domain is not supported.';
+      case EmailValidationError.topLevelDomainNotAllowed:
+        return 'Emails that use only a top-level domain are not allowed.';
+      case EmailValidationError.unknownProvider:
+        return 'The email provider is not recognized.';
+      case EmailValidationError.invalidAlias:
+        return 'The email provider alias is not recognized.';
+      case EmailValidationError.internationalEmailNotSupported:
+        return 'Internationalized email addresses are not supported.';
+      case EmailValidationError.disallowedTopLevelDomain:
+        return 'Emails with this top-level domain are not allowed.';
     }
   }
 }
