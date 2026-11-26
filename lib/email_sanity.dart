@@ -1,5 +1,5 @@
 /// Enhanced email validation with known-provider domain checks.
-library email_sanity;
+library;
 
 export 'src/email_sanity.dart';
 export 'src/model/validation_result.dart';
