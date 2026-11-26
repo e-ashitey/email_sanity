@@ -1,0 +1,15 @@
+# Local / tooling
+.dart_tool/
+.idea/
+.vscode/
+.github/
+Makefile
+.metadata
+
+# Demo asset (kept in the repo for README, excluded from the pub archive)
+preview.gif
+
+# Build / coverage
+build/
+coverage/
+*.lcov
